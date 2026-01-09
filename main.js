@@ -1,105 +1,85 @@
-const API = "https://shiva3344a.pythonanywhere.com";
-
 const tg = window.Telegram?.WebApp;
 if (tg) tg.ready();
 
-/* -------- USER -------- */
 let user;
 if (tg && tg.initDataUnsafe?.user) {
   user = tg.initDataUnsafe.user;
 } else {
-  user = { id: 999999, username: "BrowserUser", first_name: "Browser" };
+  user = { id: "999999", username: "BrowserUser" };
 }
 
 const userId = user.id;
-const username = user.username || "User";
-
-/* -------- UI -------- */
-const balanceEl = document.getElementById("balance");
-const adsSeenEl = document.getElementById("adsSeen");
-const watchBtn = document.getElementById("watchBtn");
-const welcomeEl = document.getElementById("welcome");
-const refInput = document.getElementById("refLink");
-
-welcomeEl.innerText = `Welcome @${username}`;
-refInput.value = `https://t.me/AdifyEarning_Bot?start=ref_${userId}`;
+const API = "https://shiva3344a.pythonanywhere.com";
 
 let balance = 0;
 let adsSeen = 0;
-const adLimit = 250;
-const earningPerAd = 0.0002;
-let isWatching = false;
 
-/* -------- LOAD USER -------- */
-fetch(`${API}/user`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ user_id: userId })
-})
-.then(res => res.json())
-.then(data => {
-  balance = data.balance;
-  adsSeen = data.ads_today;
-  updateUI();
-})
-.catch(() => alert("Backend not responding"));
+// ---------- UI ----------
+document.getElementById("welcome").innerText =
+  "Welcome @" + (user.username || "User");
 
-/* -------- UPDATE UI -------- */
+document.getElementById("ref").value =
+  "https://t.me/AdifyEarning_Bot?start=ref_" + userId;
+
 function updateUI() {
-  balanceEl.innerText = "$" + balance.toFixed(4);
-  adsSeenEl.innerText = adsSeen;
+  document.getElementById("balance").innerText =
+    "$" + balance.toFixed(4);
+  document.getElementById("adsSeen").innerText = adsSeen;
 }
 
-/* -------- WATCH AD -------- */
-watchBtn.onclick = () => {
-  if (isWatching) return;
+// ---------- INIT ----------
+const initForm = new FormData();
+initForm.append("user_id", userId);
 
-  if (adsSeen >= adLimit) {
-    alert("Daily ad limit reached");
-    return;
-  }
+fetch(API + "/user", { method: "POST", body: initForm })
+  .then(r => r.json())
+  .then(d => {
+    balance = d.balance;
+    adsSeen = d.ads_today;
+    updateUI();
+  });
 
-  isWatching = true;
-  watchBtn.disabled = true;
+// ---------- WATCH AD ----------
+function watchAd() {
+  const f = new FormData();
+  f.append("user_id", userId);
 
-  let time = 3;
-  watchBtn.innerText = `Please wait ${time}s`;
+  fetch(API + "/watch-ad", { method: "POST", body: f })
+    .then(r => r.json())
+    .then(d => {
+      if (d.error) return alert(d.error);
+      balance = d.balance;
+      adsSeen = d.ads_today;
+      updateUI();
+    })
+    .catch(() => alert("Backend not responding"));
+}
 
-  const timer = setInterval(() => {
-    time--;
-    if (time > 0) {
-      watchBtn.innerText = `Please wait ${time}s`;
-    } else {
-      clearInterval(timer);
+// ---------- WITHDRAW ----------
+function withdraw() {
+  const wallet = document.getElementById("wallet").value.trim();
+  if (!wallet) return alert("Enter USDT BEP20 address");
 
-      fetch(`${API}/watch-ad`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          balance = data.balance;
-          adsSeen = data.ads_today;
-          updateUI();
-        }
-      })
-      .catch(() => alert("Server error"))
-      .finally(() => {
-        watchBtn.disabled = false;
-        watchBtn.innerText = "▶ Watch Ad";
-        isWatching = false;
-      });
-    }
-  }, 1000);
-};
+  const f = new FormData();
+  f.append("user_id", userId);
+  f.append("address", wallet);
 
-/* -------- COPY REF -------- */
+  fetch(API + "/withdraw", { method: "POST", body: f })
+    .then(r => r.json())
+    .then(d => {
+      if (d.error) alert(d.error);
+      else {
+        alert("Withdraw request sent");
+        balance = 0;
+        updateUI();
+      }
+    });
+}
+
+// ---------- COPY ----------
 function copyRef() {
-  refInput.select();
-  document.execCommand("copy");
-  alert("Referral link copied");
+  navigator.clipboard.writeText(
+    document.getElementById("ref").value
+  );
+  alert("Copied");
 }
