@@ -69,8 +69,33 @@ function watchAd() {
     } else {
       clearInterval(timer);
 
-      adsSeen++;
-      balance += earningPerAd;
+      fetch("https://shiva3344a.pythonanywhere.com/watch-ad", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    user_id: tg.initDataUnsafe.user.id
+  })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.error) {
+    alert(data.error);
+  } else {
+    balance = data.balance;
+    adsSeen = data.ads_today;
+    updateUI();
+  }
+})
+.catch(() => {
+  alert("Server error");
+})
+.finally(() => {
+  isWatching = false;
+  btn.disabled = false;
+  btn.innerText = "Watch Ad";
+});
 
       updateUI();
 
