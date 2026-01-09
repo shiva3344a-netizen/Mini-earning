@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #0a1433, #050b1e);
+  color: #fff;
+}
+
+.container {
+  padding: 15px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f1f44;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #2d6cff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+button:disabled {
+  background: #555;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 8px;
+}
+
+.progress {
+  background: #1b2d5a;
+  height: 8px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: #2dff6a;
+  border-radius: 6px;
+}
+
+ul {
+  padding-left: 18px;
+}

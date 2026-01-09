@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ads Earning Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h2 id="welcomeText">Welcome</h2>
+
+  <!-- Balance -->
+  <div class="card">
+    <h3>💰 Balance</h3>
+    <h1 id="balance">$0.0000</h1>
+    <p>Minimum withdraw: $0.05</p>
+  </div>
+
+  <!-- Watch Ads -->
+  <div class="card">
+    <h3>🎯 Watch Ads</h3>
+
+    <button id="watchBtn" onclick="watchAd()">▶ Watch Ad</button>
+
+    <div class="progress">
+      <div id="progressBar"></div>
+    </div>
+
+    <p>Ads Seen: <span id="adsSeen">0 / 250</span></p>
+    <p>$0.0002 per ad · Daily limit 250</p>
+  </div>
+
+  <!-- Referral -->
+  <div class="card">
+    <h3>👥 Referral (20% lifetime)</h3>
+    <input type="text" id="refLink" readonly>
+    <button onclick="copyRef()">Copy Referral Link</button>
+
+    <h4>📜 Invite History</h4>
+    <ul id="inviteHistory">
+      <li>No invites yet</li>
+    </ul>
+  </div>
+
+  <!-- Withdraw -->
+  <div class="card">
+    <h3>💸 Withdraw</h3>
+
+    <select id="payoutType">
+      <option value="USDT_BEP20">USDT (BEP20)</option>
+    </select>
+
+    <input type="text" id="wallet" placeholder="Enter USDT BEP20 Wallet (0x...)">
+    <button onclick="withdraw()">Request Withdraw</button>
+
+    <h4>📜 Payout History</h4>
+    <ul id="payoutHistory">
+      <li>No payouts yet</li>
+    </ul>
+  </div>
+
+  <!-- Notes -->
+  <div class="card">
+    <h3>📌 Important Notes</h3>
+    <ul>
+      <li>No VPN / Proxy</li>
+      <li>Fake activity = ban</li>
+      <li>One account per user</li>
+    </ul>
+  </div>
+
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
